@@ -1,5 +1,5 @@
 class Wizard:
-    def __init__(self, name, house, age):
+    def __init__(self, name, house, age: int):
         self.name = name
         self.house = house
         self.age = age
@@ -12,7 +12,7 @@ class Wizard:
         if not isinstance(other, Wizard):
             return False
 
-        return self.name == other.name
+        return self.name == other.name and self.house == other.house and self.age == other.age
 
     @property
     def age(self):
@@ -45,7 +45,7 @@ class Wizard:
 
 
 class Student(Wizard):
-    def __init__(self, name, house, age, year, points=0):
+    def __init__(self, name, house, age, year: int, points=0):
         super().__init__(name, house, age)
         if not 1 <= year <= 7:
             raise ValueError("Invalid year")
@@ -55,13 +55,20 @@ class Student(Wizard):
     def introduce(self):
         return f"Hi! I'm {self.name} from {self.house} house. I'm currently in year {self.year}."
 
-    def earn_points(self, n):
+    def earn_points(self, n: int):
+        if not isinstance(n, int):
+            raise TypeError("Point must be an integer!")
+         
         self.points += n
 
-    def lose_points(self, n):
-        # If not enough point
+    def lose_points(self, n: int):
+        if not isinstance(n, int):
+            raise TypeError("Point must be an integer!")
+        
+        # Prevent points from dropping below 0
         if n > self.points:
             self.points = 0
+            print("Not enough points! Your points hit rock bottom!")
             return
 
         self.points -= n
@@ -77,7 +84,7 @@ class Professor(Wizard):
 
 
 class Ghost(Wizard):
-    def __init__(self, name, house, age=None, greeting="Boooo!"):
+    def __init__(self, name, house=None, age=None, greeting="Boooo!"):
         super().__init__(name, house, age)
         self.greeting = greeting
 
@@ -92,7 +99,7 @@ class Hogwarts:
         Professor("Severus Snape", "Slytherin", 38, "Potions"),
         Professor("Filius Flitwick", "Ravenclaw", 60, "Charms"),
         Professor("Pomona Sprout", "Hufflepuff", 60, "Herbology"),
-        Professor("Rubeus Hagrid", "Gryffindor", 50, "Magical Creatures"),
+        Professor("Rubeus Hagrid", "Gryffindor", 50, "Magical Creatures and a Gamekeeper"),
         Student("Harry Potter", "Gryffindor", 11, 1),
         Student("Ron Weasley", "Gryffindor", 11, 1),
         Student("Hermione Granger", "Gryffindor", 11, 1),
@@ -121,7 +128,7 @@ class Hogwarts:
             raise TypeError("You have to enter a Wizard!")
 
         if wizard in cls.wizards:
-            return f"{wizard} already is in Hogwarts."
+            raise ValueError(f"{wizard.name} already is in Hogwarts.")
 
         cls.wizards.append(wizard)
 
@@ -131,7 +138,7 @@ class Hogwarts:
             raise TypeError("You have to enter a Wizard!")
 
         if wizard not in cls.wizards:
-            return f"Sorry, {wizard} is not in Hogwarts."
+            raise ValueError(f"Sorry, {wizard.name} is not in Hogwarts.")
 
         cls.wizards.remove(wizard)
 
@@ -141,9 +148,9 @@ class Hogwarts:
             raise TypeError("You have to enter a Wizard!")
 
         if wizard in cls.wizards:
-            return f"{wizard} is from Hogwarts."
+            print(f"{wizard.name} is from Hogwarts.")
         else:
-            return f"{wizard} does not belong to Hogwarts!"
+            print(f"{wizard.name} does not belong to Hogwarts!")
 
     @classmethod
     def show_all_wizards(cls):
@@ -172,3 +179,13 @@ class Hogwarts:
         for wizard in cls.wizards:
             # print(f"{wizard.name}; {wizard.introduce()}")
             print(wizard.introduce())
+
+    @classmethod
+    def show_house_members(cls, house):
+        if house not in cls.houses:
+            raise ValueError("The House does not exist.")
+
+        print(f"🏠 {house}:\n")
+        for wizard in cls.wizards:
+            if wizard.house == house:
+                print(wizard.name)
