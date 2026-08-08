@@ -4,8 +4,10 @@ class Wizard:
         self.house = house
         self.age = age
 
+
     def __str__(self):
         return f"{self.name} => house: {self.house}, age: {self.age}"
+
 
     def __eq__(self, other):
         # Check the typr of other
@@ -14,9 +16,11 @@ class Wizard:
 
         return self.name == other.name and self.house == other.house and self.age == other.age
 
+
     @property
     def age(self):
         return self._age
+
 
     @age.setter
     def age(self, age):
@@ -37,6 +41,7 @@ class Wizard:
     def house(self):
         return self._house
 
+
     @house.setter
     def house(self, house):
         if house is not None and house not in ["Gryffindor", "Slytherin", "Ravenclaw", "Hufflepuff"]:
@@ -52,14 +57,17 @@ class Student(Wizard):
         self.year = year
         self.points = points
 
+
     def introduce(self):
         return f"Hi! I'm {self.name} from {self.house} house. I'm currently in year {self.year}."
+
 
     def earn_points(self, n: int):
         if not isinstance(n, int):
             raise TypeError("Point must be an integer!")
          
         self.points += n
+
 
     def lose_points(self, n: int):
         if not isinstance(n, int):
@@ -79,6 +87,7 @@ class Professor(Wizard):
         super().__init__(name, house, age)
         self.subject = subject
 
+
     def introduce(self):
         return f"Hello. I'm {self.name}, professor of {self.subject}."
 
@@ -87,6 +96,7 @@ class Ghost(Wizard):
     def __init__(self, name, house=None, age=None, greeting="Boooo!"):
         super().__init__(name, house, age)
         self.greeting = greeting
+
 
     def introduce(self):
         return f"{self.name}: {self.greeting}"
@@ -122,6 +132,7 @@ class Hogwarts:
     subjects = ["Astronomy", "Charms", "Defence Against the Dark Arts",
                 "Herbology", "History of Magic", "Potions", "Transfiguration"]
 
+
     @classmethod
     def add(cls, wizard):
         if not isinstance(wizard, Wizard):
@@ -131,6 +142,7 @@ class Hogwarts:
             raise ValueError(f"{wizard.name} already is in Hogwarts.")
 
         cls.wizards.append(wizard)
+
 
     @classmethod
     def remove(cls, wizard):
@@ -142,6 +154,7 @@ class Hogwarts:
 
         cls.wizards.remove(wizard)
 
+
     @classmethod
     def find(cls, wizard):
         if not isinstance(wizard, Wizard):
@@ -152,11 +165,35 @@ class Hogwarts:
         else:
             print(f"{wizard.name} does not belong to Hogwarts!")
 
+
     @classmethod
     def show_all_wizards(cls):
-        print("🧙 Wizards Of Hogwarts:")
-        for i, wizard in enumerate(cls.wizards):
-            print(i+1, wizard)
+        print("🧙 Wizards Of Hogwarts\n")
+
+        # Group the members
+        professors = []
+        students = []
+        ghosts = []
+        for wizard in cls.wizards:
+            if isinstance(wizard, Professor):
+                professors.append(wizard)
+            elif isinstance(wizard, Student):
+                students.append(wizard)
+            else:
+                ghosts.append(wizard)
+
+        print("👨‍🏫 Professors:")
+        for i, professor in enumerate(sorted(professors, key=lambda professor: professor.name)):
+            print(i+1, professor)
+
+        print("\n🎓 Students:")
+        for i, student in enumerate(sorted(students, key=lambda student: student.name)):
+            print(i+1, student)
+
+        print("\n👻 Ghosts:")
+        for i, ghost in enumerate(sorted(ghosts, key=lambda ghost: ghost.name)):
+            print(i+1, ghost)
+
 
     @classmethod
     def show_all_houses(cls):
@@ -164,21 +201,25 @@ class Hogwarts:
         for j, house in enumerate(cls.houses):
             print(j+1, house)
 
+
     @classmethod
     def show_all_subjects(cls):
         print("📚 7 Core Subjects At Hogwarts:")
         for k, subject in enumerate(cls.subjects):
             print(k+1, subject)
 
+
     @classmethod
     def __len__(cls):
         return len(cls.wizards)
+
 
     @classmethod
     def introduce(cls):
         for wizard in cls.wizards:
             # print(f"{wizard.name}; {wizard.introduce()}")
             print(wizard.introduce())
+
 
     @classmethod
     def show_house_members(cls, house):
